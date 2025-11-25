@@ -12,8 +12,10 @@ import json
 import os
 import sys
 
-# Add parent directory to path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+# Add parent directory to path to import mokka module
+script_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.dirname(script_dir)  # D:/MMC-Prototype
+sys.path.insert(0, project_root)
 
 from mokka.postprocess.adaptive_filter import apply_adaptive_filter_to_keypoints, KalmanFilter
 
@@ -33,7 +35,7 @@ def main():
     
     # 1. Load Input Data
     print("\n1. Loading input data...")
-    input_file = 'motion-correction/footage_Day08_Mon10_Yr2025_Hr11_Min11_Sec50.json'
+    input_file = os.path.join(script_dir, 'footage_Day08_Mon10_Yr2025_Hr11_Min11_Sec50.json')
     
     with open(input_file, 'r') as f:
         data = json.load(f)
@@ -134,7 +136,7 @@ def main():
     output_frames = kpts3d_filtered.tolist()
     output_data = {'frames': output_frames}
     
-    output_filename = 'motion-correction/' + time.strftime("d%d_mo%m_y%Y_%Hh_%Mm_%Ss_") + 'adaptive-filtered_output.json'
+    output_filename = os.path.join(script_dir, time.strftime("d%d_mo%m_y%Y_%Hh_%Mm_%Ss_") + 'adaptive-filtered_output.json')
     
     with open(output_filename, 'w') as f:
         json.dump(output_data, f, indent=2)
@@ -163,7 +165,7 @@ def main():
     
     axes[-1].set_xlabel('Frame', fontsize=11)
     plt.tight_layout()
-    plt.savefig('motion-correction/adaptive_filter_trajectory.png', dpi=150, bbox_inches='tight')
+    plt.savefig(os.path.join(script_dir, 'adaptive_filter_trajectory.png'), dpi=150, bbox_inches='tight')
     print("   Saved: adaptive_filter_trajectory.png")
     
     # Plot 2: Filter weights evolution
@@ -181,7 +183,7 @@ def main():
     ax.set_ylim([0, 1])
     
     plt.tight_layout()
-    plt.savefig('motion-correction/adaptive_filter_weights.png', dpi=150, bbox_inches='tight')
+    plt.savefig(os.path.join(script_dir, 'adaptive_filter_weights.png'), dpi=150, bbox_inches='tight')
     print("   Saved: adaptive_filter_weights.png")
     
     # Plot 3: Comparison with Kalman
@@ -198,7 +200,7 @@ def main():
     ax.grid(True, alpha=0.3)
     
     plt.tight_layout()
-    plt.savefig('motion-correction/adaptive_vs_kalman.png', dpi=150, bbox_inches='tight')
+    plt.savefig(os.path.join(script_dir, 'adaptive_vs_kalman.png'), dpi=150, bbox_inches='tight')
     print("   Saved: adaptive_vs_kalman.png")
     
     print("\n" + "="*60)
